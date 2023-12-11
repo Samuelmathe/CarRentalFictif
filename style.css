@@ -1,0 +1,220 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Styles généraux */
+  body {
+    font-family: Arial, sans-serif;
+    background: rgb(255,232,232);
+    background: linear-gradient(90deg, rgba(255,232,232,1) 0%, rgba(255,232,232,1) 25%, rgba(216,216,216,1) 50%, rgba(255,232,232,1) 78%, rgba(251,252,248,1) 100%);
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background: rgb(83,242,236);
+background: linear-gradient(90deg, rgba(83,242,236,1) 0%, rgba(83,242,86,1) 33%, rgba(50,247,70,0.29099562188156514) 63%, rgba(83,242,236,1) 75%, rgba(251,252,248,1) 100%);
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+  }
+  
+  header h1 {
+    margin-bottom: 0.5em;
+  }
+  
+  .list {
+    display: inline;
+    margin-right: 10px;
+  }
+  
+  .list button {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .list button:hover {
+    background: #555;
+  }
+  
+  .onglets {
+    margin-top: 20px;
+  }
+  /* Exemple de CSS pour la présentation de l'onglet Accueil */
+
+.presentation {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.presentation h2 {
+  font-size: 2em;
+  color: #0066cc;
+}
+
+.presentation h3 {
+  font-size: 1.5em;
+  color: #009933;
+  margin-top: 15px;
+}
+
+.presentation h4 {
+  font-size: 1.2em;
+  color: #990000;
+  margin-top: 15px;
+}
+
+.presentation h5 {
+  font-size: 1em;
+  color: #ff9900;
+  margin-top: 10px;
+}
+
+.presentation p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.presentation ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.presentation ul li {
+  margin-bottom: 15px;
+}
+  /* fin accueil */
+  /* categorie */
+  /* Style pour la section categorie */
+.categorie {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  /* Style pour les contrôles */
+  .control {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+  }
+  
+  /* Style pour les éléments de tri */
+  .tri {
+    margin-bottom: 10px;
+  }
+  
+  /* Style pour les éléments de recherche */
+  .search input {
+    padding: 8px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Style pour les éléments de filtre */
+  .filter {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+  }
+  
+  /* Style pour les champs de filtre */
+  .prix input,
+  .kilometre input,
+  .capacite input {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Style pour les cases à cocher */
+  .carburant p {
+    margin: 5px 0;
+  }
+  
+  /* Style pour le select de marque */
+  .marque select {
+    width: 150px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .voitures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+  }
+  
+  .voiture {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .voiture img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .voiture h3 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+  
+  .voiture ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .voiture li {
+    margin-bottom: 5px;
+  }
+  /* fin categorie */
+  /* CSS pour l'onglet À propos */
+
+.a-propos {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.a-propos h2 {
+  font-size: 2em;
+  color: #0066cc;
+  margin-bottom: 15px;
+}
+
+.a-propos h3 {
+  font-size: 1.5em;
+  color: #009933;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.a-propos p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}

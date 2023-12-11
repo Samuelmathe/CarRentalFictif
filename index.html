@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Location de voiture</title>
+</head>
+<body>
+  <header>
+     <h1>Location de voiture</h1>
+     <section class="onglets">
+        <ul>
+            <li class="list"><button class="tablink" onclick="openTab(event,'tab1')" id="openDefault">Accueil</button></li>
+            <li class="list"><button class="tablink" onclick="openTab(event,'tab2')">Catégorie de voitures</button></li>
+            <li class="list"><button class="tablink" onclick="openTab(event,'tab3')">À propos</button></li>
+        </ul>
+     </section>
+  </header>
+<main>
+<!-- 1er onglet accueil -->
+<section class="tabcontent accueil" id="tab1">
+  <div class="presentation">
+    <h2>Bienvenue chez AutoLoc</h2>
+    <p>Découvrez l'expérience ultime de location de voitures</p>
+    
+    <p>Chez AutoLoc, nous sommes déterminés à rendre chaque trajet inoubliable. Depuis notre création en 20XX, nous nous engageons à offrir à nos clients le choix le plus vaste de véhicules, des tarifs compétitifs et un service exceptionnel.</p>
+    
+    <h3>Notre engagement :</h3>
+    <p>Proposer des solutions de mobilité flexibles et adaptées à vos besoins.</p>
+
+    <h4>Pourquoi choisir AutoLoc ?</h4>
+    <ul>
+      <li>
+        <h5>Des Offres Uniques</h5>
+        <p>Découvrez nos offres exceptionnelles sur une large gamme de voitures de qualité. Des compactes pratiques aux SUV spacieux, nous avons tout ce dont vous avez besoin pour vos aventures, qu'elles soient grandes ou petites.</p>
+      </li>
+      <li>
+        <h5>Services Sur-Mesure</h5>
+        <p>Profitez de services personnalisés pour rendre votre location facile et sans stress. Livraison à domicile, options d'assurance complètes et kilométrage illimité - tout est conçu pour vous offrir la meilleure expérience possible.</p>
+      </li>
+      <li>
+        <h5>Expertise et Confiance</h5>
+        <p>Notre équipe dévouée est là pour répondre à toutes vos questions et vous guider tout au long de votre location. Avec AutoLoc, louez en toute tranquillité d'esprit.</p>
+      </li>
+    </ul>
+
+    <p>Faites le premier pas vers votre prochaine aventure automobile avec AutoLoc!</p>
+    <p>Explorez notre sélection de voitures dès maintenant et préparez-vous à partir pour de nouvelles aventures.</p>
+  </div>
+</section>
+<!-- fin  onglet -->
+<!-- onglet categorie de voiture  -->
+<section class="tabcontent categorie" id="tab2">
+  <div class="control">
+    <div class="tri">
+      <p>Trier par :</p>
+      <p>
+        <select name="tri" id="tri">
+          <option value="year">Année</option>
+          <option value="price">Prix</option>
+          <option value="kilometer">Kilométrage</option>
+          <option value="marque">Marque</option>
+        </select>
+      </p>
+      <p style="display: none;">
+        <select name="ordre" id="ordre">
+          <option value="croissant">Croissant</option>
+          <option value="decroissant">Décroissant</option>
+        </select>
+      </p>
+    </div>
+    <div class="search">
+      <input type="search" name="recherche" id="recherche" placeholder="Rechercher modèle/marque">
+    </div>
+    <div class="filter">
+      <p>Filtrer :</p>
+      <div class="prix">
+        <input type="number" name="prix_max" id="prix_max" placeholder="Prix max">
+        <input type="number" name="prix_min" id="prix_min" placeholder="Prix min">
+      </div>
+      <div class="kilometre">
+        <input type="number" name="kilometre_max" id="kilometre_max" placeholder="Kilométrage max">
+        <input type="number" name="kilometre_min" id="kilometre_min" placeholder="Kilométrage min">
+      </div>
+      <div class="capacite_personne">
+        <input type="number" name="capacite" id="capacite" placeholder="Capacité (nombre de personnes max)">
+      </div>
+      <div class="carburant">
+        <p>
+          <input type="checkbox" name="essence" id="essence" checked> Essence
+        </p>
+        <p>
+          <input type="checkbox" name="diesel" id="diesel" checked> Diesel
+        </p>
+        <p>
+          <input type="checkbox" name="electrique" id="electrique" checked> Électrique
+        </p>
+      </div>
+      <div class="marque">
+        <p>Marque :</p>
+        <select name="filtre_marque" id="filtre_marque">
+          <option value="toutes">Toutes les marques</option>
+          <option value="toyota">Toyota</option>
+          <option value="ford">Ford</option>
+          <option value="honda">Honda</option>
+          <option value="BMW">BMW</option>
+          <option value="mercedes">Mercedes</option>
+          <option value="volkswagen">Volkswagen</option>
+          <option value="audi">Audi</option>
+          <option value="nissan">Nissan</option>
+          <option value="ferrari">Ferrari</option>
+          <option value="chevrolet">Chevrolet</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="voitures-grid" id="voituresGrid"> 
+  </div>
+</section>
+<!-- fin onglet -->
+<!-- Onglet "À propos" ou "Qui suis-je" -->
+<section class="tabcontent apropos" id="tab3">
+
+  <div class="a-propos">
+    <h2>À propos de ce site</h2>
+    <p>Bienvenue sur mon projet de site fictif de location de voitures !</p>
+    
+    <p>Ce site a été conçu dans le cadre de mon portefeuille (portfolio) pour démontrer mes compétences en conception web et en développement front-end. Il ne représente pas une entreprise ou un service réel, mais vise à présenter mes capacités dans la création de sites web.</p>
+
+    <h3>Mon Objectif</h3>
+    <p>À travers ce projet, j'ai cherché à mettre en pratique mes connaissances en HTML, CSS et JavaScript pour créer une expérience utilisateur convaincante et intuitive.</p>
+
+    <h3>Technologies Utilisées</h3>
+    <p>Ce site a été construit en utilisant HTML5, CSS3 pour la mise en page et les styles, ainsi que JavaScript pour la fonctionnalité des onglets et d'autres interactions.</p>
+
+    <h3>Mon Profil</h3>
+    <p>Je suis passionné par le développement web et j'aspire à créer des expériences en ligne remarquables. N'hésitez pas à explorer ce site pour découvrir mes compétences et mes capacités.</p>
+
+    <p>Merci de visiter mon portfolio !</p>
+  </div>
+
+<!-- Fin onglet "À propos" -->
+</section>
+</main>
+<script src="app.js/app.js">
+
+</script>
+</body>
+</html>
