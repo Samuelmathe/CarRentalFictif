@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiement — AutoLoc</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="card-surface" style="max-width: 520px; margin: 2rem auto; padding: 1.5rem;">
+    <h1 style="margin-top: 0;">Paiement</h1>
+    <p id="payMsg">Vérification auprès du serveur…</p>
+    <p class="muted">Les cartes sont traitées par <strong>Stripe</strong> (hébergement sécurisé PCI-DSS).</p>
+    <p><a class="btn btn-primary" href="/">Retour au site</a></p>
+  </main>
+  <script>
+    (async () => {
+      const sid = new URLSearchParams(location.search).get('session_id');
+      const el = document.getElementById('payMsg');
+      if (!sid) {
+        el.textContent = 'Lien incomplet (session_id manquant).';
+        return;
+      }
+      try {
+        const r = await fetch('/api/stripe/session-status?session_id=' + encodeURIComponent(sid));
+        const d = await r.json();
+        if (!r.ok) {
+          el.textContent = d.error || 'Session introuvable.';
+          return;
+        }
+        el.textContent = d.paid
+          ? 'Merci. Votre paiement est confirmé. Vous pouvez fermer cette page ou retourner au site.'
+          : 'Statut du paiement : ' + (d.payment_status || 'inconnu') + '.';
+      } catch {
+        el.textContent = 'Impossible de joindre le serveur.';
+      }
+    })();
+  </script>
+</body>
+</html>

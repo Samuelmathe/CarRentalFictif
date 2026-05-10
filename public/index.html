@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AutoLoc — location de véhicules (démo). Catalogue, filtres et demande de réservation.">
+  <title>AutoLoc — Location de véhicules</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="logo" data-tab="tab1" aria-label="AutoLoc accueil">
+        <span class="logo-mark">A</span>
+        <span class="logo-text">AutoLoc</span>
+      </a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Principal">
+        <button type="button" class="nav-link tablink is-active" data-tab="tab1">Accueil</button>
+        <button type="button" class="nav-link tablink" data-tab="tab2">Véhicules</button>
+        <button type="button" class="nav-link tablink" data-tab="tab4">Compte</button>
+        <button type="button" class="nav-link tablink nav-admin-only" id="navAdmin" data-tab="tab5" hidden>Admin</button>
+        <button type="button" class="nav-link tablink" data-tab="tab3">À propos</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <section class="tabcontent hero-wrap" id="tab1" hidden>
+      <div class="hero">
+        <p class="hero-kicker">Mobilité sans friction</p>
+        <h1>Roulez moderne avec <em>AutoLoc</em></h1>
+        <p class="hero-lead">Flotte variée, tarifs clairs et parcours en ligne — démo technique HTML, CSS, JavaScript, Express et SQLite.</p>
+        <button type="button" class="btn btn-primary tablink" data-tab="tab2">Voir les véhicules</button>
+      </div>
+      <div class="prose card-surface">
+        <h2>Pourquoi AutoLoc&nbsp;?</h2>
+        <ul class="feature-list">
+          <li>
+            <strong>Offres adaptées</strong>
+            <span>Du citadin compact au SUV familial, avec filtres et tri en temps réel.</span>
+          </li>
+          <li>
+            <strong>Données côté serveur</strong>
+            <span>Le catalogue est servi par une API REST ; la base SQLite peut être remplacée par PostgreSQL ou MySQL en production.</span>
+          </li>
+          <li>
+            <strong>Réservation démo</strong>
+            <span>Formulaire relié au backend pour montrer le flux complet (sans paiement réel).</span>
+          </li>
+          <li>
+            <strong>Compte &amp; session</strong>
+            <span>Inscription, connexion (cookie de session httpOnly) et historique de vos demandes.</span>
+          </li>
+          <li>
+            <strong>Back-office</strong>
+            <span>Rôle administrateur : gérer le catalogue et le statut des réservations.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="tabcontent catalog" id="tab2" hidden>
+      <div class="catalog-head">
+        <h2>Catalogue</h2>
+        <p class="muted" id="catalogStatus">Chargement…</p>
+      </div>
+
+      <div class="toolbar card-surface">
+        <div class="toolbar-row">
+          <label class="field">
+            <span>Trier par</span>
+            <select id="tri">
+              <option value="year">Année</option>
+              <option value="price">Prix / jour</option>
+              <option value="km">Kilométrage</option>
+              <option value="brand">Marque</option>
+            </select>
+          </label>
+          <label class="field grow">
+            <span>Recherche</span>
+            <input type="search" id="recherche" placeholder="Modèle ou marque…" autocomplete="off">
+          </label>
+        </div>
+        <div class="toolbar-row filters-grid">
+          <label class="field">
+            <span>Prix min (€)</span>
+            <input type="number" id="prix_min" placeholder="—" min="0" step="1">
+          </label>
+          <label class="field">
+            <span>Prix max (€)</span>
+            <input type="number" id="prix_max" placeholder="—" min="0" step="1">
+          </label>
+          <label class="field">
+            <span>Km min</span>
+            <input type="number" id="kilometre_min" placeholder="—" min="0" step="1000">
+          </label>
+          <label class="field">
+            <span>Km max</span>
+            <input type="number" id="kilometre_max" placeholder="—" min="0" step="1000">
+          </label>
+          <label class="field">
+            <span>Places min.</span>
+            <input type="number" id="capacite" placeholder="—" min="1" max="12" step="1">
+          </label>
+          <label class="field">
+            <span>Marque</span>
+            <select id="filtre_marque">
+              <option value="toutes">Toutes</option>
+              <option value="toyota">Toyota</option>
+              <option value="ford">Ford</option>
+              <option value="honda">Honda</option>
+              <option value="bmw">BMW</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="volkswagen">Volkswagen</option>
+              <option value="audi">Audi</option>
+              <option value="nissan">Nissan</option>
+              <option value="ferrari">Ferrari</option>
+              <option value="chevrolet">Chevrolet</option>
+            </select>
+          </label>
+        </div>
+        <fieldset class="fuel-fieldset">
+          <legend>Carburant</legend>
+          <label class="check"><input type="checkbox" id="essence" checked> Essence</label>
+          <label class="check"><input type="checkbox" id="diesel" checked> Diesel</label>
+          <label class="check"><input type="checkbox" id="electrique" checked> Électrique</label>
+        </fieldset>
+      </div>
+
+      <div class="voitures-grid" id="voituresGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="tabcontent about" id="tab3" hidden>
+      <div class="prose card-surface">
+        <h2>À propos</h2>
+        <p>Ce site est une <strong>démo pédagogique</strong> de location en ligne&nbsp;: interface moderne, API Node (Express) et persistance SQLite.</p>
+        <h3>Ce que montre le projet</h3>
+        <ul>
+          <li>Front statique servi par Express (<code>public/</code>)</li>
+          <li>API REST : catalogue, réservations, authentification, espace client, admin</li>
+          <li>SQLite : utilisateurs (mot de passe hashé), véhicules, réservations avec statut</li>
+        </ul>
+        <p class="muted">Compte démo admin : <code>admin@autoloc.demo</code> / <code>AdminDemo2026!</code> — à changer en production.</p>
+        <p class="muted">Aucune entreprise réelle — idéal pour portfolio ou base vendable sur ComeUp après personnalisation.</p>
+      </div>
+    </section>
+
+    <section class="tabcontent account" id="tab4" hidden>
+      <div class="account-layout">
+        <div id="accountGuest" class="card-surface auth-panel">
+          <h2>Connexion</h2>
+          <form id="formLogin" class="stack-form">
+            <label class="field"><span>E-mail</span><input type="email" name="email" required autocomplete="username"></label>
+            <label class="field"><span>Mot de passe</span><input type="password" name="password" required autocomplete="current-password"></label>
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+            <p class="form-msg" id="loginMsg" role="status"></p>
+          </form>
+          <hr class="sep">
+          <h2>Créer un compte</h2>
+          <form id="formRegister" class="stack-form">
+            <label class="field"><span>Nom affiché</span><input type="text" name="display_name" required minlength="2" autocomplete="name"></label>
+            <label class="field"><span>E-mail</span><input type="email" name="email" required autocomplete="email"></label>
+            <label class="field"><span>Mot de passe</span><input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+            <button type="submit" class="btn btn-primary">S&apos;inscrire</button>
+            <p class="form-msg" id="registerMsg" role="status"></p>
+          </form>
+        </div>
+        <div id="accountUser" class="card-surface auth-panel" hidden>
+          <div class="account-head">
+            <div>
+              <h2>Mon compte</h2>
+              <p class="muted" id="accountWelcome"></p>
+            </div>
+            <button type="button" class="btn" id="btnLogout">Déconnexion</button>
+          </div>
+          <h3>Mes réservations</h3>
+          <div id="myReservationsWrap" class="table-wrap">
+            <p class="muted" id="myReservationsEmpty">Chargement…</p>
+            <table class="data-table" id="myReservationsTable" hidden>
+              <thead>
+                <tr>
+                  <th>Véhicule</th>
+                  <th>Dates</th>
+                  <th>Réservation</th>
+                  <th>Paiement</th>
+                </tr>
+              </thead>
+              <tbody id="myReservationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tabcontent admin" id="tab5" hidden>
+      <div class="admin-grid">
+        <div class="card-surface">
+          <h2>Nouveau véhicule</h2>
+          <form id="formNewCar" class="stack-form admin-form">
+            <label class="field"><span>URL image</span><input type="url" name="image_url" required placeholder="https://…"></label>
+            <label class="field"><span>Nom</span><input type="text" name="name" required></label>
+            <label class="field"><span>Marque (slug)</span><input type="text" name="brand" required placeholder="ex. toyota"></label>
+            <div class="two-col">
+              <label class="field"><span>Prix / jour (€)</span><input type="number" name="price_per_day" required min="1" step="1"></label>
+              <label class="field"><span>Places</span><input type="number" name="seats" required min="1" max="12" step="1"></label>
+            </div>
+            <label class="field"><span>Carburant</span>
+              <select name="fuel" required>
+                <option value="Essence">Essence</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Électrique">Électrique</option>
+              </select>
+            </label>
+            <div class="two-col">
+              <label class="field"><span>Année</span><input type="number" name="year" required min="1950" max="2100" step="1"></label>
+              <label class="field"><span>Kilométrage</span><input type="number" name="km" required min="0" step="100"></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <p class="form-msg" id="adminCarMsg" role="status"></p>
+          </form>
+        </div>
+        <div class="card-surface span-2">
+          <h2>Catalogue (admin)</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="adminCarsTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nom</th>
+                  <th>Prix</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="adminCarsBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-surface span-full">
+          <h2>Réservations</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="adminResTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Véhicule</th>
+                  <th>Période</th>
+                  <th>Réservation</th>
+                  <th>Paiement</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="adminResBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>AutoLoc · démo 2026 · Express + SQLite</p>
+  </footer>
+
+  <div class="modal" id="resModal" role="dialog" aria-modal="true" aria-labelledby="resTitle" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel card-surface">
+      <button type="button" class="modal-close" data-close-modal aria-label="Fermer">&times;</button>
+      <h2 id="resTitle">Demande de location</h2>
+      <p class="muted" id="resCarLabel"></p>
+      <form id="resForm" class="res-form">
+        <input type="hidden" name="car_id" id="resCarId">
+        <label class="field">
+          <span>Nom</span>
+          <input name="customer_name" required autocomplete="name" placeholder="Votre nom">
+        </label>
+        <label class="field">
+          <span>E-mail</span>
+          <input name="email" type="email" required autocomplete="email" placeholder="vous@exemple.com">
+        </label>
+        <fieldset class="fuel-fieldset payment-fieldset">
+          <legend>Paiement</legend>
+          <label class="check pay-option">
+            <input type="radio" name="payment_method" value="on_site" checked>
+            <span>Sur place — vous payez à l’agence ; un administrateur confirmera le règlement.</span>
+          </label>
+          <label class="check pay-option">
+            <input type="radio" name="payment_method" value="stripe">
+            <span>En ligne — carte bancaire via <strong>Stripe</strong> (page hébergée sécurisée, aucune carte sur nos serveurs).</span>
+          </label>
+        </fieldset>
+        <label class="field">
+          <span>Période de location</span>
+          <input type="text" id="resDateRange" class="date-range-input" readonly placeholder="Choisissez une plage…" autocomplete="off">
+        </label>
+        <input type="hidden" name="start_date" id="resStartDate" value="">
+        <input type="hidden" name="end_date" id="resEndDate" value="">
+        <div id="resBusyWrap" class="busy-periods card-inset" hidden>
+          <p class="busy-title">Créneaux déjà pris pour ce véhicule</p>
+          <ul id="resBusyList" class="busy-list"></ul>
+          <p id="resBusyEmpty" class="muted" hidden>Aucune réservation active — toutes les dates à venir sont libres.</p>
+        </div>
+        <p class="form-hint muted">Les plages <strong>en attente</strong> ou <strong>confirmées</strong> ne sont pas sélectionnables. Le montant est calculé <strong>côté serveur</strong> (jours × prix/jour).</p>
+        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+        <p class="form-msg" id="resMsg" role="status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/fr.js"></script>
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

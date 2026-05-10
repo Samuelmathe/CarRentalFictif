@@ -12,11 +12,6 @@ function createSqliteStore(db) {
       return db.prepare('SELECT * FROM cars WHERE id = ?').get(n) || null;
     },
 
-    async carExists(id) {
-      const row = await this.carById(id);
-      return Boolean(row);
-    },
-
     async createCar(payload) {
       const info = db
         .prepare(
@@ -87,15 +82,81 @@ function createSqliteStore(db) {
       return row;
     },
 
-    async createReservation({ car_id, customer_name, email, start_date, end_date, user_id }) {
+    async createReservation({
+      car_id,
+      customer_name,
+      email,
+      start_date,
+      end_date,
+      user_id,
+      payment_method,
+      payment_status,
+      amount_cents,
+      stripe_checkout_session_id,
+    }) {
       const cid = Number.parseInt(String(car_id), 10);
+      const uidParsed = Number.parseInt(String(user_id), 10);
+      const uid = user_id != null && user_id !== '' && Number.isInteger(uidParsed) ? uidParsed : null;
       const info = db
         .prepare(
-          `INSERT INTO reservations (car_id, customer_name, email, start_date, end_date, user_id, status)
-           VALUES (?, ?, ?, ?, ?, ?, 'pending')`
+          `INSERT INTO reservations (
+             car_id, customer_name, email, start_date, end_date, user_id, status,
+             payment_method, payment_status, amount_cents, stripe_checkout_session_id
+           ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?)`
         )
-        .run(cid, customer_name, email, String(start_date), String(end_date), user_id != null ? Number(user_id) : null);
+        .run(
+          cid,
+          customer_name,
+          email,
+          String(start_date),
+          String(end_date),
+          uid,
+          payment_method,
+          payment_status,
+          amount_cents ?? null,
+          stripe_checkout_session_id ?? null
+        );
       return { id: info.lastInsertRowid };
+    },
+
+    async updateReservationStripeSession(reservationId, sessionId) {
+      const n = Number.parseInt(String(reservationId), 10);
+      if (!Number.isInteger(n) || n < 1) return false;
+      const info = db
+        .prepare(
+          `UPDATE reservations SET stripe_checkout_session_id = ?
+           WHERE id = ? AND payment_method = 'stripe'`
+        )
+        .run(String(sessionId), n);
+      return info.changes > 0;
+    },
+
+    async markReservationPaidFromStripeSession(sessionId) {
+      const info = db
+        .prepare(
+          `UPDATE reservations SET payment_status = 'paid'
+           WHERE stripe_checkout_session_id = ? AND payment_method = 'stripe' AND payment_status = 'unpaid'`
+        )
+        .run(String(sessionId));
+      return info.changes > 0;
+    },
+
+    async confirmPhysicalPayment(reservationId) {
+      const n = Number.parseInt(String(reservationId), 10);
+      if (!Number.isInteger(n) || n < 1) return null;
+      const info = db
+        .prepare(
+          `UPDATE reservations SET payment_status = 'paid'
+           WHERE id = ? AND payment_method = 'on_site' AND payment_status = 'awaiting_physical'`
+        )
+        .run(n);
+      if (info.changes === 0) return null;
+      return db
+        .prepare(
+          `SELECT r.*, c.name AS car_name
+           FROM reservations r JOIN cars c ON c.id = r.car_id WHERE r.id = ?`
+        )
+        .get(n);
     },
 
     async reservationsForUser(userId) {
@@ -128,7 +189,45 @@ function createSqliteStore(db) {
       if (!Number.isInteger(n) || n < 1) return null;
       const info = db.prepare('UPDATE reservations SET status = ? WHERE id = ?').run(status, n);
       if (info.changes === 0) return null;
-      return db.prepare('SELECT * FROM reservations WHERE id = ?').get(n);
+      return db
+        .prepare(
+          `SELECT r.*, c.name AS car_name
+           FROM reservations r JOIN cars c ON c.id = r.car_id WHERE r.id = ?`
+        )
+        .get(n);
+    },
+
+    /** Réservations qui bloquent le calendrier (hors annulées) */
+    async getBlockingPeriodsForCar(carId) {
+      const car = await this.carById(carId);
+      if (!car) return [];
+      const cid = Number.parseInt(String(car.id), 10);
+      if (!Number.isInteger(cid) || cid < 1) return [];
+      return db
+        .prepare(
+          `SELECT start_date, end_date, status FROM reservations
+           WHERE car_id = ? AND status IN ('pending', 'confirmed')
+           AND (payment_status IS NULL OR payment_status != 'failed')
+           ORDER BY start_date ASC`
+        )
+        .all(cid);
+    },
+
+    /** Chevauchement avec une plage [start_date, end_date] (inclus) */
+    async countOverlappingReservations(carId, start_date, end_date) {
+      const car = await this.carById(carId);
+      if (!car) return 0;
+      const cid = Number.parseInt(String(car.id), 10);
+      if (!Number.isInteger(cid) || cid < 1) return 0;
+      const row = db
+        .prepare(
+          `SELECT COUNT(*) AS c FROM reservations
+           WHERE car_id = ? AND status IN ('pending', 'confirmed')
+           AND (payment_status IS NULL OR payment_status != 'failed')
+           AND start_date <= ? AND end_date >= ?`
+        )
+        .get(cid, String(end_date), String(start_date));
+      return row ? Number(row.c) : 0;
     },
   };
 }

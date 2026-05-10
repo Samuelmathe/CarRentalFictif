@@ -1,0 +1,28 @@
+# Test local “comme en production” : app Node + MongoDB
+# Usage : docker compose -f docker-compose.deploy.yml up --build
+#
+# Puis ouvrir http://localhost:3000 — le catalogue et l’admin sont seedés au premier démarrage Mongo.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      SESSION_SECRET: docker-compose-demo-secret-change-in-real-deploy
+      TRUST_PROXY: "false"
+      MONGODB_URI: mongodb://mongo:27017/autoloc
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
