@@ -122,9 +122,9 @@ function createAdminRouter(store) {
       console.error(e);
       return res.status(500).json({ error: 'Erreur serveur.' });
     }
-  });
+  }));
 
-  r.delete('/cars/:id', async (req, res) => {
+  r.delete('/cars/:id', asyncHandler(async (req, res) => {
     try {
       const id = req.params.id;
       const ok = await store.deleteCar(id);
