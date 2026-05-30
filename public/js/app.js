@@ -516,6 +516,7 @@
     els.resMsg.textContent = '';
     els.resMsg.className = 'form-msg';
     els.modal.hidden = false;
+    document.body.classList.add('modal-open');
     await setupReservationCalendar(carId);
     prefillReservationForm();
     const first = els.resForm.querySelector('input[name="customer_name"]');
@@ -526,6 +527,7 @@
   function closeModal() {
     destroyResPicker();
     els.modal.hidden = true;
+    document.body.classList.remove('modal-open');
   }
 
   function bindModal() {

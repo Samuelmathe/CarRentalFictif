@@ -36,6 +36,10 @@ body {
   line-height: 1.6;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 .skip-link {
   position: absolute;
   left: -999px;
@@ -522,9 +526,14 @@ main {
   position: fixed;
   inset: 0;
   z-index: 80;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: max(1rem, env(safe-area-inset-top, 0px)) 1rem max(1rem, env(safe-area-inset-bottom, 0px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .modal-backdrop {
@@ -538,8 +547,25 @@ main {
   position: relative;
   z-index: 1;
   width: min(420px, 100%);
+  max-height: calc(100dvh - 2rem - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  margin: auto 0;
   padding: 1.5rem 1.35rem 1.75rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   animation: fadeIn 0.25s ease;
+}
+
+@media (min-width: 640px) {
+  .modal:not([hidden]) {
+    align-items: center;
+  }
+
+  .modal-panel {
+    margin: auto;
+    max-height: min(90dvh, 720px);
+  }
 }
 
 .modal-close {
